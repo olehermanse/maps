@@ -6,13 +6,13 @@ const markers = [
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center h-screen w-screen">
+    <div className="flex items-center justify-center h-dvh w-dvw">
       <div className="relative">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/lektern-bg.png"
           alt=""
-          className="block max-w-full max-h-screen h-auto w-auto"
+          className="block max-w-full max-h-dvh h-auto w-auto"
         />
         {markers.map((marker, i) => (
           <a
