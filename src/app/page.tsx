@@ -22,7 +22,7 @@ export default function Home() {
         {markers.map((marker, i) => (
           <button
             key={i}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
+            className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
             style={{
               left: `${marker.x}%`,
               top: `${marker.y}%`,
