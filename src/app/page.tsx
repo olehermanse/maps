@@ -201,10 +201,10 @@ export default function Home() {
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
               <Image
-                src={marker.src}
+                src={marker.src.replace("/photos/", "/thumbnails/")}
                 alt=""
-                width={1000}
-                height={1000}
+                width={100}
+                height={100}
                 className="block w-full aspect-square object-cover"
               />
               <div className="absolute inset-0 rounded-lg pointer-events-none" style={{ boxShadow: "inset 0 0 0 0.15vw black" }} />

@@ -6,9 +6,11 @@ COPY package.json package-lock.json* ./
 RUN npm ci || npm install
 
 FROM base AS builder
+RUN apk add --no-cache imagemagick
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN ./generate-thumbnails.sh
 RUN npm run build
 
 FROM base AS runner
