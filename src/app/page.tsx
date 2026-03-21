@@ -2,26 +2,26 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
-type PhotoMarker = { imgs: string[]; x: number; y: number; size: number; depth: number; label: string };
+type PhotoMarker = { label: string; x: number; y: number; size: number; m: number; imgs: string[] };
 type LabelMarker = { x: number; y: number; label: string };
 
 const photoMarkers: PhotoMarker[] = [
-  { imgs: ["lektern-north.jpg"], x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
-  { imgs: ["ring.jpg", "ring-1.jpg", "ring-2.jpg", "ring-3.jpg", "ring-4.jpg"], x: 6, y: 50, size: 9, depth: 12, label: "Ringen" },
-  { imgs: ["old-platform-1.jpg", "old-platform-2.jpg", "old-platform-3.jpg", "old-platform-4.jpg"], x: 17, y: 45, size: 10, depth: 11, label: "Gamleplatta" },
-  { imgs: ["platform-2.jpg", "platform-1.jpg", "platform-3.jpg", "platform-4.jpg", "platform-5.jpg"], x: 6, y: 30, size: 10, depth: 7, label: "Plattingen" },
-  { imgs: ["sword.jpg"], x: 30, y: 55, size: 8, depth: 12, label: "Sverdanker" },
-  { imgs: ["lektern-east-1.jpg", "lektern-east-2.jpg", "lektern-east-3.jpg"], x: 46, y: 60, size: 8, depth: 12, label: "Lektern Ø" },
-  { imgs: ["rocks-1.jpg", "rocks-2.jpg", "rocks-3.jpg"], x: 38, y: 36, size: 11, depth: 7, label: "Steinrøys" },
-  { imgs: ["tube-1.jpg", "tube-2.jpg"], x: 54, y: 42, size: 9, depth: 9, label: "Rør" },
-  { imgs: ["tubes-4.jpg", "tubes-1.jpg", "tubes-2.jpg", "tubes-3.jpg", "tubes-5.jpg", "tubes-6.jpg"], x: 74, y: 44, size: 9, depth: 8, label: "2 rør" },
-  { imgs: ["end-of-line.jpg", "pillar.jpg"], x: 81, y: 58, size: 8, depth: 10, label: "Line" },
-  { imgs: ["front.jpg", "under.jpg", "tire.jpg"], x: 54, y: 91, size: 11, depth: 19, label: "Nedafor" },
-  { imgs: ["hole.jpg", "corner.jpg"], x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
+  { label: "Lektern N", x: 23, y: 76, size: 8, m: 17, imgs: ["lektern-north.jpg"] },
+  { label: "Ringen", x: 6, y: 50, size: 8, m: 11, imgs: ["ring.jpg", "ring-1.jpg", "ring-2.jpg", "ring-3.jpg", "ring-4.jpg"] },
+  { label: "Gamleplatta", x: 17, y: 45, size: 8, m: 11, imgs: ["old-platform-1.jpg", "old-platform-2.jpg", "old-platform-3.jpg", "old-platform-4.jpg"] },
+  { label: "Plattingen", x: 6, y: 30, size: 8, m: 7, imgs: ["platform-2.jpg", "platform-1.jpg", "platform-3.jpg", "platform-4.jpg", "platform-5.jpg"] },
+  { label: "Sverdanker", x: 30, y: 55, size: 8, m: 12, imgs: ["sword.jpg"] },
+  { label: "Lektern Ø", x: 46, y: 60, size: 8, m: 12, imgs: ["lektern-east-1.jpg", "lektern-east-2.jpg", "lektern-east-3.jpg"] },
+  { label: "Steinrøys", x: 38, y: 36, size: 11, m: 7, imgs: ["rocks-1.jpg", "rocks-2.jpg", "rocks-3.jpg"] },
+  { label: "Rør", x: 54, y: 42, size: 8, m: 9, imgs: ["tube-1.jpg", "tube-2.jpg"] },
+  { label: "2 rør", x: 74, y: 44, size: 8, m: 8, imgs: ["tubes-4.jpg", "tubes-1.jpg", "tubes-2.jpg", "tubes-3.jpg", "tubes-5.jpg", "tubes-6.jpg"] },
+  { label: "Line", x: 81, y: 58, size: 8, m: 10, imgs: ["end-of-line.jpg", "pillar.jpg"] },
+  { label: "Nedafor", x: 54, y: 91, size: 11, m: 19, imgs: ["front.jpg", "under.jpg", "tire.jpg"] },
+  { label: "Høl", x: 64, y: 72, size: 8, m: 16, imgs: ["hole.jpg", "corner.jpg"] },
 ];
 
 const labelMarkers: LabelMarker[] = [
-  { x: 90, y: 1.5, label: "Prodykk ^" },
+  { x: 90, y: 1.5, label: "ProDykk ^" },
   { x: 22, y: 22, label: "Skolebrygga" },
 ];
 
@@ -205,7 +205,7 @@ export default function Home() {
             }}
             onClick={() => { if (!hasDragged.current) { setImgIndex(0); setFullscreen(marker); } }}
           >
-            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
+            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-125 rounded-lg overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`/thumbnails/${marker.imgs[0]}`}
@@ -217,7 +217,7 @@ export default function Home() {
                 {marker.label}
               </span>
               <span className="absolute bottom-1 right-2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" style={{ fontSize: "1vw" }}>
-                {marker.depth}m
+                {marker.m}m
               </span>
             </div>
           </button>
@@ -282,7 +282,7 @@ export default function Home() {
             )}
           </div>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm sm:text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
-            {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.imgs[imgIndex]}
+            {fullscreen.label} &middot; {fullscreen.m}m &middot; {fullscreen.imgs[imgIndex]}
             {fullscreen.imgs.length > 1 && ` (${imgIndex + 1}/${fullscreen.imgs.length})`}
           </div>
         </div>
