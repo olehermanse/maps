@@ -43,3 +43,5 @@ Single-page app — all UI lives in `src/app/page.tsx`. No routing, no API.
 ## Testing
 
 Every new feature, interaction, or button must have a Playwright test in `tests/app.spec.ts`. Run tests with `npm test`. The dev server can run independently — Playwright reuses it if already running (`reuseExistingServer: true`).
+
+Make sure tests and eslint are run after every change to verify correctness.

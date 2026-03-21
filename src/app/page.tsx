@@ -69,7 +69,7 @@ export default function Home() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [openFullscreen]);
+  }, [openFullscreen, changeImg]);
 
   const clampPan = useCallback((p: { x: number; y: number }, z: number) => {
     const map = mapRef.current;
@@ -85,7 +85,6 @@ export default function Home() {
     };
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -168,7 +167,7 @@ export default function Home() {
       el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
     };
-  }, []);
+  }, [clampPan]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (e.button !== 0 || isPinching.current || fullscreenRef.current) return;
