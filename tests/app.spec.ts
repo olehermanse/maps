@@ -107,3 +107,23 @@ test("scroll wheel changes zoom", async ({ page }) => {
   expect(newTransform).toContain("scale(");
   expect(newTransform).not.toContain("scale(1)");
 });
+
+test("eyeball button toggles marker visibility", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("img[src='/lektern-bg.png']")).toBeVisible();
+
+  const thumbnails = page.locator("img[src^='/thumbnails/']");
+  const toggleBtn = page.locator("button[aria-label='Toggle markers']");
+
+  // Markers should be visible initially
+  await expect(thumbnails).toHaveCount(12);
+  await expect(toggleBtn).toBeVisible();
+
+  // Click eyeball to hide markers
+  await toggleBtn.click();
+  await expect(thumbnails).toHaveCount(0);
+
+  // Click again to show markers
+  await toggleBtn.click();
+  await expect(thumbnails).toHaveCount(12);
+});

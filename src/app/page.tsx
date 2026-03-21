@@ -28,6 +28,7 @@ const labelMarkers: LabelMarker[] = [
 export default function Home() {
   const [fullscreen, setFullscreen] = useState<PhotoMarker | null>(null);
   const [imgIndex, setImgIndex] = useState(0);
+  const [showMarkers, setShowMarkers] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const zoomRef = useRef(1);
@@ -200,7 +201,7 @@ export default function Home() {
           alt=""
           className="block max-w-full max-h-dvh h-auto w-auto"
         />
-        {photoMarkers.map((marker, i) => (
+        {showMarkers && photoMarkers.map((marker, i) => (
           <button
             key={i}
             className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
@@ -307,6 +308,15 @@ export default function Home() {
             </div>
           </div>
         </div>
+      )}
+      {!fullscreen && (
+        <button
+          className="fixed bottom-4 right-4 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-2xl cursor-pointer hover:bg-black/80"
+          onClick={() => setShowMarkers((v) => !v)}
+          aria-label="Toggle markers"
+        >
+          <span className={showMarkers ? "" : "opacity-40"}>{"\u{1F441}"}</span>
+        </button>
       )}
     </div>
   );
