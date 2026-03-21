@@ -9,16 +9,16 @@ type LabelMarker = { x: number; y: number; label: string };
 const photoMarkers: PhotoMarker[] = [
   { imgs: ["lektern-north.jpg"], x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
   { imgs: ["ring.jpg", "ring-1.jpg", "ring-2.jpg", "ring-3.jpg", "ring-4.jpg"], x: 6, y: 50, size: 8, depth: 12, label: "Ringen" },
-  { imgs: ["old-platform-1.jpg"], x: 17, y: 45, size: 8, depth: 11, label: "Gamleplatta" },
-  { imgs: ["platform-2.jpg"], x: 6, y: 30, size: 8, depth: 7, label: "Plattingen" },
+  { imgs: ["old-platform-1.jpg", "old-platform-2.jpg", "old-platform-3.jpg", "old-platform-4.jpg"], x: 17, y: 45, size: 8, depth: 11, label: "Gamleplatta" },
+  { imgs: ["platform-2.jpg", "platform-1.jpg", "platform-3.jpg", "platform-4.jpg", "platform-5.jpg"], x: 6, y: 30, size: 8, depth: 7, label: "Plattingen" },
   { imgs: ["sword.jpg"], x: 30, y: 55, size: 8, depth: 12, label: "Sverdanker" },
-  { imgs: ["lektern-east-1.jpg"], x: 46, y: 60, size: 8, depth: 12, label: "Lektern Ø" },
-  { imgs: ["rocks-1.jpg"], x: 38, y: 36, size: 8, depth: 7, label: "Steinrøys" },
-  { imgs: ["tube-1.jpg"], x: 54, y: 42, size: 8, depth: 9, label: "Rør" },
-  { imgs: ["tubes-4.jpg"], x: 74, y: 44, size: 8, depth: 8, label: "2 rør" },
-  { imgs: ["end-of-line.jpg"], x: 81, y: 58, size: 8, depth: 10, label: "Line" },
-  { imgs: ["front.jpg"], x: 54, y: 88, size: 8, depth: 19, label: "Nedafor" },
-  { imgs: ["hole.jpg"], x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
+  { imgs: ["lektern-east-1.jpg", "lektern-east-2.jpg", "lektern-east-3.jpg"], x: 46, y: 60, size: 8, depth: 12, label: "Lektern Ø" },
+  { imgs: ["rocks-1.jpg", "rocks-2.jpg", "rocks-3.jpg"], x: 38, y: 36, size: 8, depth: 7, label: "Steinrøys" },
+  { imgs: ["tube-1.jpg", "tube-2.jpg"], x: 54, y: 42, size: 8, depth: 9, label: "Rør" },
+  { imgs: ["tubes-4.jpg", "tubes-1.jpg", "tubes-2.jpg", "tubes-3.jpg", "tubes-5.jpg", "tubes-6.jpg"], x: 74, y: 44, size: 8, depth: 8, label: "2 rør" },
+  { imgs: ["end-of-line.jpg", "pillar.jpg"], x: 81, y: 58, size: 8, depth: 10, label: "Line" },
+  { imgs: ["front.jpg", "under.jpg", "tire.jpg"], x: 54, y: 88, size: 8, depth: 19, label: "Nedafor" },
+  { imgs: ["hole.jpg", "corner.jpg"], x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
 ];
 
 const labelMarkers: LabelMarker[] = [
