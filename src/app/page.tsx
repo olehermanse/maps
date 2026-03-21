@@ -28,6 +28,7 @@ const labelMarkers: LabelMarker[] = [
 
 export default function Home() {
   const [fullscreen, setFullscreen] = useState<PhotoMarker | null>(null);
+  const [imgIndex, setImgIndex] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const zoomRef = useRef(1);
@@ -203,7 +204,7 @@ export default function Home() {
               top: `${marker.y}%`,
               width: `${marker.size}%`,
             }}
-            onClick={() => { if (!hasDragged.current) setFullscreen(marker); }}
+            onClick={() => { if (!hasDragged.current) { setImgIndex(0); setFullscreen(marker); } }}
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
               <Image
@@ -239,25 +240,50 @@ export default function Home() {
       </div>
       {fullscreen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
           onClick={() => setFullscreen(null)}
         >
-          <div className="relative">
+          <div
+            className={`relative ${imgIndex < fullscreen.imgs.length - 1 ? "cursor-pointer" : "cursor-default"}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (imgIndex < fullscreen.imgs.length - 1) {
+                setImgIndex((i) => i + 1);
+              }
+            }}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`/photos/${fullscreen.imgs[0]}`}
+              src={`/photos/${fullscreen.imgs[imgIndex]}`}
               alt=""
               className="max-w-full max-h-dvh object-contain"
             />
             <button
               className="absolute top-2 right-2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
-              onClick={() => setFullscreen(null)}
+              onClick={(e) => { e.stopPropagation(); setFullscreen(null); }}
             >
               &times;
             </button>
+            {imgIndex > 0 && (
+              <button
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
+                onClick={(e) => { e.stopPropagation(); setImgIndex((i) => i - 1); }}
+              >
+                &lsaquo;
+              </button>
+            )}
+            {imgIndex < fullscreen.imgs.length - 1 && (
+              <button
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
+                onClick={(e) => { e.stopPropagation(); setImgIndex((i) => i + 1); }}
+              >
+                &rsaquo;
+              </button>
+            )}
           </div>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
-            {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.imgs[0]}
+            {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.imgs[imgIndex]}
+            {fullscreen.imgs.length > 1 && ` (${imgIndex + 1}/${fullscreen.imgs.length})`}
           </div>
         </div>
       )}
