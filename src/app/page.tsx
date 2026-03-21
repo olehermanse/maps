@@ -1,29 +1,16 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import data from "@/data/map-data.json";
 
 type PhotoMarker = { label: string; x: number; y: number; size: number; m: number; imgs: string[] };
 type LabelMarker = { x: number; y: number; label: string };
 
-const photoMarkers: PhotoMarker[] = [
-  { label: "Lektern N", x: 23, y: 76, size: 8, m: 17, imgs: ["lektern-north.jpg"] },
-  { label: "Ringen", x: 6, y: 50, size: 8, m: 11, imgs: ["ring.jpg", "ring-1.jpg", "ring-2.jpg", "ring-3.jpg", "ring-4.jpg"] },
-  { label: "Gamleplatta", x: 17, y: 45, size: 8, m: 11, imgs: ["old-platform-1.jpg", "old-platform-2.jpg", "old-platform-3.jpg", "old-platform-4.jpg"] },
-  { label: "Plattingen", x: 6, y: 30, size: 8, m: 7, imgs: ["platform-2.jpg", "platform-1.jpg", "platform-3.jpg", "platform-4.jpg", "platform-5.jpg"] },
-  { label: "Sverdanker", x: 30, y: 55, size: 8, m: 12, imgs: ["sword.jpg"] },
-  { label: "Lektern Ø", x: 46, y: 60, size: 8, m: 12, imgs: ["lektern-east-1.jpg", "lektern-east-2.jpg", "lektern-east-3.jpg"] },
-  { label: "Steinrøys", x: 38, y: 36, size: 11, m: 7, imgs: ["rocks-1.jpg", "rocks-2.jpg", "rocks-3.jpg"] },
-  { label: "Rør", x: 54, y: 42, size: 8, m: 9, imgs: ["tube-1.jpg", "tube-2.jpg"] },
-  { label: "2 rør", x: 74, y: 44, size: 8, m: 8, imgs: ["tubes-4.jpg", "tubes-1.jpg", "tubes-2.jpg", "tubes-3.jpg", "tubes-5.jpg", "tubes-6.jpg"] },
-  { label: "Line", x: 81, y: 58, size: 8, m: 10, imgs: ["end-of-line.jpg", "pillar.jpg"] },
-  { label: "Nedafor", x: 54, y: 91, size: 11, m: 19, imgs: ["front.jpg", "under.jpg", "tire.jpg"] },
-  { label: "Høl", x: 64, y: 72, size: 8, m: 16, imgs: ["hole.jpg", "corner.jpg"] },
-];
-
-const labelMarkers: LabelMarker[] = [
-  { x: 90, y: 1.5, label: "ProDykk ^" },
-  { x: 22, y: 22, label: "Skolebrygga" },
-];
+const { photoMarkers, labelMarkers, background } = data.maps.lektern as {
+  photoMarkers: PhotoMarker[];
+  labelMarkers: LabelMarker[];
+  background: string;
+};
 
 export default function Home() {
   const [fullscreen, setFullscreen] = useState<PhotoMarker | null>(null);
@@ -210,7 +197,7 @@ export default function Home() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/lektern-bg.png"
+          src={`/${background}`}
           alt=""
           className="block max-w-full max-h-dvh h-auto w-auto"
         />
