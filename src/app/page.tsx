@@ -3,22 +3,22 @@
 import Image from "next/image";
 import { useState, useRef, useCallback, useEffect } from "react";
 
-type PhotoMarker = { src: string; x: number; y: number; size: number; depth: number; label: string };
+type PhotoMarker = { imgs: string[]; x: number; y: number; size: number; depth: number; label: string };
 type LabelMarker = { x: number; y: number; label: string };
 
 const photoMarkers: PhotoMarker[] = [
-  { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
-  { src: "/photos/ring.jpg", x: 6, y: 50, size: 8, depth: 12, label: "Ringen" },
-  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 11, label: "Gamleplatta" },
-  { src: "/photos/platform-2.jpg", x: 6, y: 30, size: 8, depth: 7, label: "Plattingen" },
-  { src: "/photos/sword.jpg", x: 30, y: 55, size: 8, depth: 12, label: "Sverdanker" },
-  { src: "/photos/lektern-east-1.jpg", x: 46, y: 60, size: 8, depth: 12, label: "Lektern Ø" },
-  { src: "/photos/rocks-1.jpg", x: 38, y: 36, size: 8, depth: 7, label: "Steinrøys" },
-  { src: "/photos/tube-1.jpg", x: 54, y: 42, size: 8, depth: 9, label: "Rør" },
-  { src: "/photos/tubes-4.jpg", x: 74, y: 44, size: 8, depth: 8, label: "2 rør" },
-  { src: "/photos/end-of-line.jpg", x: 81, y: 58, size: 8, depth: 10, label: "Line" },
-  { src: "/photos/front.jpg", x: 54, y: 88, size: 8, depth: 19, label: "Nedafor" },
-  { src: "/photos/hole.jpg", x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
+  { imgs: ["lektern-north.jpg"], x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
+  { imgs: ["ring.jpg", "ring-1.jpg", "ring-2.jpg", "ring-3.jpg", "ring-4.jpg"], x: 6, y: 50, size: 8, depth: 12, label: "Ringen" },
+  { imgs: ["old-platform-1.jpg"], x: 17, y: 45, size: 8, depth: 11, label: "Gamleplatta" },
+  { imgs: ["platform-2.jpg"], x: 6, y: 30, size: 8, depth: 7, label: "Plattingen" },
+  { imgs: ["sword.jpg"], x: 30, y: 55, size: 8, depth: 12, label: "Sverdanker" },
+  { imgs: ["lektern-east-1.jpg"], x: 46, y: 60, size: 8, depth: 12, label: "Lektern Ø" },
+  { imgs: ["rocks-1.jpg"], x: 38, y: 36, size: 8, depth: 7, label: "Steinrøys" },
+  { imgs: ["tube-1.jpg"], x: 54, y: 42, size: 8, depth: 9, label: "Rør" },
+  { imgs: ["tubes-4.jpg"], x: 74, y: 44, size: 8, depth: 8, label: "2 rør" },
+  { imgs: ["end-of-line.jpg"], x: 81, y: 58, size: 8, depth: 10, label: "Line" },
+  { imgs: ["front.jpg"], x: 54, y: 88, size: 8, depth: 19, label: "Nedafor" },
+  { imgs: ["hole.jpg"], x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
 ];
 
 const labelMarkers: LabelMarker[] = [
@@ -207,7 +207,7 @@ export default function Home() {
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
               <Image
-                src={marker.src.replace("/photos/", "/thumbnails/")}
+                src={`/thumbnails/${marker.imgs[0]}`}
                 alt=""
                 width={100}
                 height={100}
@@ -245,7 +245,7 @@ export default function Home() {
           <div className="relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={fullscreen.src}
+              src={`/photos/${fullscreen.imgs[0]}`}
               alt=""
               className="max-w-full max-h-dvh object-contain"
             />
@@ -257,7 +257,7 @@ export default function Home() {
             </button>
           </div>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
-            {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.src.split("/").pop()}
+            {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.imgs[0]}
           </div>
         </div>
       )}
