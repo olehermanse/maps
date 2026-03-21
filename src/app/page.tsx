@@ -28,7 +28,16 @@ const labelMarkers: LabelMarker[] = [
 export default function Home() {
   const [fullscreen, setFullscreen] = useState<PhotoMarker | null>(null);
   const [imgIndex, setImgIndex] = useState(0);
+  const imgIndexRef = useRef(0);
+  const [imgLoading, setImgLoading] = useState(false);
   const [showMarkers, setShowMarkers] = useState(true);
+  const changeImg = useCallback((indexOrFn: number | ((i: number) => number)) => {
+    const next = typeof indexOrFn === "function" ? indexOrFn(imgIndexRef.current) : indexOrFn;
+    if (next === imgIndexRef.current) return;
+    imgIndexRef.current = next;
+    setImgLoading(true);
+    setImgIndex(next);
+  }, []);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const zoomRef = useRef(1);
@@ -48,20 +57,38 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!fullscreenRef.current) return;
+      if (e.key === "Escape") {
+        openFullscreen(null);
+      } else if (e.key === "ArrowRight") {
+        changeImg((i) => Math.min(i + 1, fullscreenRef.current!.imgs.length - 1));
+      } else if (e.key === "ArrowLeft") {
+        changeImg((i) => Math.max(i - 1, 0));
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [openFullscreen]);
+
+  const clampPan = useCallback((p: { x: number; y: number }, z: number) => {
+    const map = mapRef.current;
+    const container = containerRef.current;
+    if (!map || !container) return p;
+    const mw = map.offsetWidth * z;
+    const mh = map.offsetHeight * z;
+    const maxX = Math.max((mw - container.offsetWidth) / 2, 0);
+    const maxY = Math.max((mh - container.offsetHeight) / 2, 0);
+    return {
+      x: Math.min(Math.max(p.x, -maxX), maxX),
+      y: Math.min(Math.max(p.y, -maxY), maxY),
+    };
+  }, []);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const clampPan = (p: { x: number; y: number }, z: number) => {
-      const map = mapRef.current;
-      if (!map || !el) return p;
-      const mw = map.offsetWidth * z;
-      const mh = map.offsetHeight * z;
-      const maxX = Math.max((mw - el.offsetWidth) / 2, 0);
-      const maxY = Math.max((mh - el.offsetHeight) / 2, 0);
-      return {
-        x: Math.min(Math.max(p.x, -maxX), maxX),
-        y: Math.min(Math.max(p.y, -maxY), maxY),
-      };
-    };
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (fullscreenRef.current) return;
@@ -157,23 +184,10 @@ export default function Home() {
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) hasDragged.current = true;
     lastPos.current = { x: e.clientX, y: e.clientY };
     const p = panRef.current;
-    const map = mapRef.current;
-    const container = containerRef.current;
-    const z = zoomRef.current;
-    let newPan = { x: p.x + dx, y: p.y + dy };
-    if (map && container) {
-      const mw = map.offsetWidth * z;
-      const mh = map.offsetHeight * z;
-      const maxX = Math.max((mw - container.offsetWidth) / 2, 0);
-      const maxY = Math.max((mh - container.offsetHeight) / 2, 0);
-      newPan = {
-        x: Math.min(Math.max(newPan.x, -maxX), maxX),
-        y: Math.min(Math.max(newPan.y, -maxY), maxY),
-      };
-    }
+    const newPan = clampPan({ x: p.x + dx, y: p.y + dy }, zoomRef.current);
     panRef.current = newPan;
     setPan(newPan);
-  }, [zoom]);
+  }, [clampPan]);
 
   const handlePointerUp = useCallback(() => {
     isDragging.current = false;
@@ -201,16 +215,16 @@ export default function Home() {
           alt=""
           className="block max-w-full max-h-dvh h-auto w-auto"
         />
-        {showMarkers && photoMarkers.map((marker, i) => (
+        {showMarkers && photoMarkers.map((marker) => (
           <button
-            key={i}
+            key={marker.label}
             className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
             style={{
               left: `${marker.x}%`,
               top: `${marker.y}%`,
               width: `${marker.size}%`,
             }}
-            onClick={() => { if (!hasDragged.current) { setImgIndex(0); openFullscreen(marker); } }}
+            onClick={() => { if (!hasDragged.current) { imgIndexRef.current = 0; setImgIndex(0); openFullscreen(marker); } }}
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-125 overflow-hidden" style={{ borderRadius: "0.5vw" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -253,15 +267,21 @@ export default function Home() {
             onClick={(e) => {
               e.stopPropagation();
               if (imgIndex < fullscreen.imgs.length - 1) {
-                setImgIndex((i) => i + 1);
+                changeImg((i) => i + 1);
               }
             }}
           >
+            {imgLoading && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+              </div>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`/photos/${fullscreen.imgs[imgIndex]}`}
               alt=""
-              className="max-w-full max-h-dvh object-contain"
+              className={`max-w-full max-h-dvh object-contain transition-opacity duration-200 ${imgLoading ? "opacity-30" : "opacity-100"}`}
+              onLoad={() => setImgLoading(false)}
             />
             <button
               className="absolute top-2 right-2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
@@ -273,7 +293,7 @@ export default function Home() {
               <button
                 disabled={imgIndex === 0}
                 className={`absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full text-3xl font-bold ${imgIndex === 0 ? "bg-black/30 text-white/30 cursor-default" : "bg-black/60 text-white cursor-pointer hover:bg-black/80"}`}
-                onClick={(e) => { e.stopPropagation(); if (imgIndex > 0) setImgIndex((i) => i - 1); }}
+                onClick={(e) => { e.stopPropagation(); if (imgIndex > 0) changeImg((i) => i - 1); }}
               >
                 &lsaquo;
               </button>
@@ -282,7 +302,7 @@ export default function Home() {
               <button
                 disabled={imgIndex === fullscreen.imgs.length - 1}
                 className={`absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full text-3xl font-bold ${imgIndex === fullscreen.imgs.length - 1 ? "bg-black/30 text-white/30 cursor-default" : "bg-black/60 text-white cursor-pointer hover:bg-black/80"}`}
-                onClick={(e) => { e.stopPropagation(); if (imgIndex < fullscreen.imgs.length - 1) setImgIndex((i) => i + 1); }}
+                onClick={(e) => { e.stopPropagation(); if (imgIndex < fullscreen.imgs.length - 1) changeImg((i) => i + 1); }}
               >
                 &rsaquo;
               </button>
@@ -298,7 +318,7 @@ export default function Home() {
                     src={`/thumbnails/${img}`}
                     alt=""
                     className={`w-12 h-12 sm:w-16 sm:h-16 object-cover rounded cursor-pointer border-2 ${i === imgIndex ? "border-white opacity-100" : "border-transparent opacity-50 hover:opacity-80"}`}
-                    onClick={() => setImgIndex(i)}
+                    onClick={() => changeImg(i)}
                   />
                 ))}
               </div>

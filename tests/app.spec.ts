@@ -127,3 +127,38 @@ test("eyeball button toggles marker visibility", async ({ page }) => {
   await toggleBtn.click();
   await expect(thumbnails).toHaveCount(12);
 });
+
+test("escape key closes fullscreen", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("img[src='/lektern-bg.png']")).toBeVisible();
+
+  // Open fullscreen
+  await page.locator("img[src='/thumbnails/lektern-north.jpg']").click();
+  const fullImg = page.locator("img[src='/photos/lektern-north.jpg']");
+  await expect(fullImg).toBeVisible();
+
+  // Press Escape
+  await page.keyboard.press("Escape");
+  await expect(fullImg).not.toBeVisible();
+});
+
+test("arrow keys navigate carousel", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("img[src='/lektern-bg.png']")).toBeVisible();
+
+  // Open a marker with multiple images
+  await page.locator("img[src='/thumbnails/ring.jpg']").click();
+  await expect(page.locator("img[src='/photos/ring.jpg']")).toBeVisible();
+
+  // Press ArrowRight to go forward
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("img[src='/photos/ring-1.jpg']")).toBeVisible();
+
+  // Press ArrowLeft to go back
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("img[src='/photos/ring.jpg']")).toBeVisible();
+
+  // Press ArrowLeft at first image — should stay on first
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("img[src='/photos/ring.jpg']")).toBeVisible();
+});
