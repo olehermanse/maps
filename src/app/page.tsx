@@ -4,18 +4,18 @@ import Image from "next/image";
 import { useState } from "react";
 
 const markers = [
-  { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 8 },
-  { src: "/photos/ring.jpg", x: 6, y: 50, size: 8, depth: 8 },
-  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 8 },
-  { src: "/photos/platform-2.jpg", x: 6, y: 30, size: 8, depth: 8 },
-  { src: "/photos/sword.jpg", x: 30, y: 55, size: 8, depth: 8 },
-  { src: "/photos/lektern-east-1.jpg", x: 46, y: 60, size: 8, depth: 8 },
-  { src: "/photos/rocks-1.jpg", x: 38, y: 36, size: 8, depth: 8 },
-  { src: "/photos/tube-1.jpg", x: 54, y: 42, size: 8, depth: 8 },
+  { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 17 },
+  { src: "/photos/ring.jpg", x: 6, y: 50, size: 8, depth: 12 },
+  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 11 },
+  { src: "/photos/platform-2.jpg", x: 6, y: 30, size: 8, depth: 7 },
+  { src: "/photos/sword.jpg", x: 30, y: 55, size: 8, depth: 12 },
+  { src: "/photos/lektern-east-1.jpg", x: 46, y: 60, size: 8, depth: 12 },
+  { src: "/photos/rocks-1.jpg", x: 38, y: 36, size: 8, depth: 7 },
+  { src: "/photos/tube-1.jpg", x: 54, y: 42, size: 8, depth: 9 },
   { src: "/photos/tubes-4.jpg", x: 74, y: 44, size: 8, depth: 8 },
-  { src: "/photos/end-of-line.jpg", x: 81, y: 58, size: 8, depth: 8 },
-  { src: "/photos/front.jpg", x: 54, y: 88, size: 8, depth: 8 },
-  { src: "/photos/hole.jpg", x: 64, y: 72, size: 8, depth: 8 },
+  { src: "/photos/end-of-line.jpg", x: 81, y: 58, size: 8, depth: 10 },
+  { src: "/photos/front.jpg", x: 54, y: 88, size: 8, depth: 19 },
+  { src: "/photos/hole.jpg", x: 64, y: 72, size: 8, depth: 16 },
 ];
 
 export default function Home() {
@@ -33,7 +33,7 @@ export default function Home() {
         {markers.map((marker, i) => (
           <button
             key={i}
-            className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+            className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
             style={{
               left: `${marker.x}%`,
               top: `${marker.y}%`,
@@ -41,13 +41,18 @@ export default function Home() {
             }}
             onClick={() => setFullscreen(marker.src)}
           >
-            <Image
-              src={marker.src}
-              alt=""
-              width={1000}
-              height={1000}
-              className="w-full aspect-square object-cover rounded-lg border-2 border-black transition-transform duration-300 ease-in-out hover:scale-150"
-            />
+            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150">
+              <Image
+                src={marker.src}
+                alt=""
+                width={1000}
+                height={1000}
+                className="w-full aspect-square object-cover rounded-lg border-2 border-black"
+              />
+              <span className="absolute bottom-1 right-2 text-white text-xs font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                {marker.depth}m
+              </span>
+            </div>
           </button>
         ))}
       </div>
