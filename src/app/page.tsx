@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useRef, useCallback, useEffect } from "react";
 
 type PhotoMarker = { imgs: string[]; x: number; y: number; size: number; depth: number; label: string };
@@ -207,11 +206,10 @@ export default function Home() {
             onClick={() => { if (!hasDragged.current) { setImgIndex(0); setFullscreen(marker); } }}
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={`/thumbnails/${marker.imgs[0]}`}
                 alt=""
-                width={100}
-                height={100}
                 className="block w-full aspect-square object-cover"
               />
               <div className="absolute inset-0 rounded-lg pointer-events-none" style={{ boxShadow: "inset 0 0 0 0.15vw black" }} />
