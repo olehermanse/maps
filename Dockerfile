@@ -6,7 +6,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci || npm install
 
 FROM base AS builder
-RUN apk add --no-cache imagemagick
+RUN apk add --no-cache imagemagick imagemagick-jpeg
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
