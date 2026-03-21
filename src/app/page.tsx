@@ -4,18 +4,18 @@ import Image from "next/image";
 import { useState } from "react";
 
 const markers = [
-  { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 10, depth: 8 },
-  { src: "/photos/ring.jpg", x: 6, y: 50, size: 10, depth: 8 },
-  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 10, depth: 8 },
-  { src: "/photos/platform-2.jpg", x: 6, y: 30, size: 10, depth: 8 },
-  { src: "/photos/sword.jpg", x: 30, y: 55, size: 10, depth: 8 },
-  { src: "/photos/lektern-east-1.jpg", x: 46, y: 60, size: 10, depth: 8 },
-  { src: "/photos/rocks-1.jpg", x: 38, y: 36, size: 10, depth: 8 },
-  { src: "/photos/tube-1.jpg", x: 54, y: 42, size: 10, depth: 8 },
-  { src: "/photos/tubes-4.jpg", x: 74, y: 44, size: 10, depth: 8 },
-  { src: "/photos/end-of-line.jpg", x: 81, y: 58, size: 10, depth: 8 },
-  { src: "/photos/front.jpg", x: 54, y: 88, size: 10, depth: 8 },
-  { src: "/photos/hole.jpg", x: 64, y: 72, size: 10, depth: 8 },
+  { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 8 },
+  { src: "/photos/ring.jpg", x: 6, y: 50, size: 8, depth: 8 },
+  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 8 },
+  { src: "/photos/platform-2.jpg", x: 6, y: 30, size: 8, depth: 8 },
+  { src: "/photos/sword.jpg", x: 30, y: 55, size: 8, depth: 8 },
+  { src: "/photos/lektern-east-1.jpg", x: 46, y: 60, size: 8, depth: 8 },
+  { src: "/photos/rocks-1.jpg", x: 38, y: 36, size: 8, depth: 8 },
+  { src: "/photos/tube-1.jpg", x: 54, y: 42, size: 8, depth: 8 },
+  { src: "/photos/tubes-4.jpg", x: 74, y: 44, size: 8, depth: 8 },
+  { src: "/photos/end-of-line.jpg", x: 81, y: 58, size: 8, depth: 8 },
+  { src: "/photos/front.jpg", x: 54, y: 88, size: 8, depth: 8 },
+  { src: "/photos/hole.jpg", x: 64, y: 72, size: 8, depth: 8 },
 ];
 
 export default function Home() {
@@ -46,7 +46,7 @@ export default function Home() {
               alt=""
               width={1000}
               height={1000}
-              className="w-full h-auto border-2 border-black transition-transform duration-300 ease-in-out hover:scale-150"
+              className="w-full aspect-square object-cover rounded-lg border-2 border-black transition-transform duration-300 ease-in-out hover:scale-150"
             />
           </button>
         ))}
