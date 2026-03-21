@@ -41,14 +41,15 @@ export default function Home() {
             }}
             onClick={() => setFullscreen(marker)}
           >
-            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150">
+            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
               <Image
                 src={marker.src}
                 alt=""
                 width={1000}
                 height={1000}
-                className="w-full aspect-square object-cover rounded-lg border-2 border-black"
+                className="block w-full aspect-square object-cover"
               />
+              <div className="absolute inset-0 rounded-lg pointer-events-none" style={{ boxShadow: "inset 0 0 0 0.15vw black" }} />
               <span className="absolute top-1 left-1/2 -translate-x-1/2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap" style={{ fontSize: "1vw" }}>
                 {marker.label}
               </span>
