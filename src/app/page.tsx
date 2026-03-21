@@ -281,9 +281,24 @@ export default function Home() {
               </button>
             )}
           </div>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm sm:text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
-            {fullscreen.label} &middot; {fullscreen.m}m &middot; {fullscreen.imgs[imgIndex]}
-            {fullscreen.imgs.length > 1 && ` (${imgIndex + 1}/${fullscreen.imgs.length})`}
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-2 pb-4" onClick={(e) => e.stopPropagation()}>
+            {fullscreen.imgs.length > 1 && (
+              <div className="flex gap-2">
+                {fullscreen.imgs.map((img, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={`/thumbnails/${img}`}
+                    alt=""
+                    className={`w-12 h-12 sm:w-16 sm:h-16 object-cover rounded cursor-pointer border-2 ${i === imgIndex ? "border-white opacity-100" : "border-transparent opacity-50 hover:opacity-80"}`}
+                    onClick={() => setImgIndex(i)}
+                  />
+                ))}
+              </div>
+            )}
+            <div className="text-white text-sm sm:text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
+              {fullscreen.label} &middot; {fullscreen.m}m &middot; {fullscreen.imgs[imgIndex]}
+            </div>
           </div>
         </div>
       )}
