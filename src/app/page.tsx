@@ -205,18 +205,18 @@ export default function Home() {
             }}
             onClick={() => { if (!hasDragged.current) { setImgIndex(0); setFullscreen(marker); } }}
           >
-            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-125 rounded-lg overflow-hidden">
+            <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-125 overflow-hidden" style={{ borderRadius: "0.5vw" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`/thumbnails/${marker.imgs[0]}`}
                 alt=""
                 className="block w-full aspect-square object-cover"
               />
-              <div className="absolute inset-0 rounded-lg pointer-events-none" style={{ boxShadow: "inset 0 0 0 0.15vw black" }} />
-              <span className="absolute top-1 left-1/2 -translate-x-1/2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap" style={{ fontSize: "1vw" }}>
+              <div className="absolute inset-0 pointer-events-none" style={{ borderRadius: "0.5vw", boxShadow: "inset 0 0 0 0.15vw black" }} />
+              <span className="absolute left-1/2 -translate-x-1/2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap" style={{ fontSize: "1vw", top: "0.3vw" }}>
                 {marker.label}
               </span>
-              <span className="absolute bottom-1 right-2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" style={{ fontSize: "1vw" }}>
+              <span className="absolute text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" style={{ fontSize: "1vw", bottom: "0.3vw", right: "0.5vw" }}>
                 {marker.m}m
               </span>
             </div>
