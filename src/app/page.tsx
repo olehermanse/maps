@@ -19,7 +19,7 @@ const markers = [
 ];
 
 export default function Home() {
-  const [fullscreen, setFullscreen] = useState<string | null>(null);
+  const [fullscreen, setFullscreen] = useState<typeof markers[number] | null>(null);
 
   return (
     <div className="flex items-center justify-center h-dvh w-dvw">
@@ -39,7 +39,7 @@ export default function Home() {
               top: `${marker.y}%`,
               width: `${marker.size}%`,
             }}
-            onClick={() => setFullscreen(marker.src)}
+            onClick={() => setFullscreen(marker)}
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150">
               <Image
@@ -64,12 +64,21 @@ export default function Home() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-pointer"
           onClick={() => setFullscreen(null)}
         >
+          <button
+            className="absolute top-4 right-4 text-white text-3xl font-bold cursor-pointer hover:opacity-70"
+            onClick={() => setFullscreen(null)}
+          >
+            &times;
+          </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={fullscreen}
+            src={fullscreen.src}
             alt=""
             className="max-w-full max-h-dvh object-contain"
           />
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
+            {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.src.split("/").pop()}
+          </div>
         </div>
       )}
     </div>
