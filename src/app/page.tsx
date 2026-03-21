@@ -6,7 +6,7 @@ import { useState } from "react";
 const markers = [
   { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
   { src: "/photos/ring.jpg", x: 6, y: 50, size: 8, depth: 12, label: "Ringen" },
-  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 11, label: "Gamleplattingen" },
+  { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 11, label: "Gamleplatta" },
   { src: "/photos/platform-2.jpg", x: 6, y: 30, size: 8, depth: 7, label: "Plattingen" },
   { src: "/photos/sword.jpg", x: 30, y: 55, size: 8, depth: 12, label: "Sverdanker" },
   { src: "/photos/lektern-east-1.jpg", x: 46, y: 60, size: 8, depth: 12, label: "Lektern Ø" },
@@ -14,7 +14,7 @@ const markers = [
   { src: "/photos/tube-1.jpg", x: 54, y: 42, size: 8, depth: 9, label: "Rør" },
   { src: "/photos/tubes-4.jpg", x: 74, y: 44, size: 8, depth: 8, label: "2 rør" },
   { src: "/photos/end-of-line.jpg", x: 81, y: 58, size: 8, depth: 10, label: "Line" },
-  { src: "/photos/front.jpg", x: 54, y: 88, size: 8, depth: 19, label: "Nedenfor Lektern" },
+  { src: "/photos/front.jpg", x: 54, y: 88, size: 8, depth: 19, label: "Nedafor" },
   { src: "/photos/hole.jpg", x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
 ];
 
@@ -49,10 +49,10 @@ export default function Home() {
                 height={1000}
                 className="w-full aspect-square object-cover rounded-lg border-2 border-black"
               />
-              <span className="absolute top-1 left-1/2 -translate-x-1/2 text-white text-xs font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
+              <span className="absolute top-1 left-1/2 -translate-x-1/2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap" style={{ fontSize: "1vw" }}>
                 {marker.label}
               </span>
-              <span className="absolute bottom-1 right-2 text-white text-xs font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              <span className="absolute bottom-1 right-2 text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" style={{ fontSize: "1vw" }}>
                 {marker.depth}m
               </span>
             </div>
