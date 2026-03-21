@@ -40,6 +40,11 @@ export default function Home() {
   const lastTouchDist = useRef<number | null>(null);
   const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
   const isPinching = useRef(false);
+  const fullscreenRef = useRef<PhotoMarker | null>(null);
+  const openFullscreen = useCallback((marker: PhotoMarker | null) => {
+    fullscreenRef.current = marker;
+    setFullscreen(marker);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -58,6 +63,7 @@ export default function Home() {
     };
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
+      if (fullscreenRef.current) return;
       const rect = el.getBoundingClientRect();
       const cursorX = e.clientX - rect.left - rect.width / 2;
       const cursorY = e.clientY - rect.top - rect.height / 2;
@@ -75,7 +81,7 @@ export default function Home() {
       setPan(newPan);
     };
     const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length === 2) {
+      if (e.touches.length === 2 && !fullscreenRef.current) {
         e.preventDefault();
         isPinching.current = true;
         isDragging.current = false;
@@ -137,7 +143,7 @@ export default function Home() {
   }, []);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (e.button !== 0 || isPinching.current) return;
+    if (e.button !== 0 || isPinching.current || fullscreenRef.current) return;
     isDragging.current = true;
     hasDragged.current = false;
     lastPos.current = { x: e.clientX, y: e.clientY };
@@ -203,7 +209,7 @@ export default function Home() {
               top: `${marker.y}%`,
               width: `${marker.size}%`,
             }}
-            onClick={() => { if (!hasDragged.current) { setImgIndex(0); setFullscreen(marker); } }}
+            onClick={() => { if (!hasDragged.current) { setImgIndex(0); openFullscreen(marker); } }}
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-125 overflow-hidden" style={{ borderRadius: "0.5vw" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -239,7 +245,7 @@ export default function Home() {
       {fullscreen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
-          onClick={() => setFullscreen(null)}
+          onClick={() => openFullscreen(null)}
         >
           <div
             className={`relative ${imgIndex < fullscreen.imgs.length - 1 ? "cursor-pointer" : "cursor-default"}`}
@@ -258,7 +264,7 @@ export default function Home() {
             />
             <button
               className="absolute top-2 right-2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
-              onClick={(e) => { e.stopPropagation(); setFullscreen(null); }}
+              onClick={(e) => { e.stopPropagation(); openFullscreen(null); }}
             >
               &times;
             </button>
