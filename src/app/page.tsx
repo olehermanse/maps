@@ -65,18 +65,20 @@ export default function Home() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-pointer"
           onClick={() => setFullscreen(null)}
         >
-          <button
-            className="absolute top-4 right-4 text-white text-3xl font-bold cursor-pointer hover:opacity-70"
-            onClick={() => setFullscreen(null)}
-          >
-            &times;
-          </button>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={fullscreen.src}
-            alt=""
-            className="max-w-full max-h-dvh object-contain"
-          />
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={fullscreen.src}
+              alt=""
+              className="max-w-full max-h-dvh object-contain"
+            />
+            <button
+              className="absolute top-2 right-2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
+              onClick={() => setFullscreen(null)}
+            >
+              &times;
+            </button>
+          </div>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
             {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.src.split("/").pop()}
           </div>
