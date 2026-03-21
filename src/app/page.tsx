@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 const markers = [
   { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
@@ -20,10 +20,105 @@ const markers = [
 
 export default function Home() {
   const [fullscreen, setFullscreen] = useState<typeof markers[number] | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const zoomRef = useRef(1);
+  const panRef = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const hasDragged = useRef(false);
+  const lastPos = useRef({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const clampPan = (p: { x: number; y: number }, z: number) => {
+      const map = mapRef.current;
+      if (!map || !el) return p;
+      const mw = map.offsetWidth * z;
+      const mh = map.offsetHeight * z;
+      const maxX = Math.max((mw - el.offsetWidth) / 2, 0);
+      const maxY = Math.max((mh - el.offsetHeight) / 2, 0);
+      return {
+        x: Math.min(Math.max(p.x, -maxX), maxX),
+        y: Math.min(Math.max(p.y, -maxY), maxY),
+      };
+    };
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const cursorX = e.clientX - rect.left - rect.width / 2;
+      const cursorY = e.clientY - rect.top - rect.height / 2;
+      const z = zoomRef.current;
+      const p = panRef.current;
+      const next = Math.min(Math.max(z - e.deltaY * 0.001, 1), 5);
+      const scale = next / z;
+      const newPan = clampPan({
+        x: cursorX - scale * (cursorX - p.x),
+        y: cursorY - scale * (cursorY - p.y),
+      }, next);
+      zoomRef.current = next;
+      panRef.current = newPan;
+      setZoom(next);
+      setPan(newPan);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    isDragging.current = true;
+    hasDragged.current = false;
+    lastPos.current = { x: e.clientX, y: e.clientY };
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const dx = e.clientX - lastPos.current.x;
+    const dy = e.clientY - lastPos.current.y;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) hasDragged.current = true;
+    lastPos.current = { x: e.clientX, y: e.clientY };
+    const p = panRef.current;
+    const map = mapRef.current;
+    const container = containerRef.current;
+    const z = zoomRef.current;
+    let newPan = { x: p.x + dx, y: p.y + dy };
+    if (map && container) {
+      const mw = map.offsetWidth * z;
+      const mh = map.offsetHeight * z;
+      const maxX = Math.max((mw - container.offsetWidth) / 2, 0);
+      const maxY = Math.max((mh - container.offsetHeight) / 2, 0);
+      newPan = {
+        x: Math.min(Math.max(newPan.x, -maxX), maxX),
+        y: Math.min(Math.max(newPan.y, -maxY), maxY),
+      };
+    }
+    panRef.current = newPan;
+    setPan(newPan);
+  }, [zoom]);
+
+  const handlePointerUp = useCallback(() => {
+    isDragging.current = false;
+  }, []);
 
   return (
-    <div className="flex items-center justify-center h-dvh w-dvw">
-      <div className="relative">
+    <div
+      ref={containerRef}
+      className="flex items-center justify-center h-dvh w-dvw overflow-hidden select-none"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onDragStart={(e) => e.preventDefault()}
+    >
+      <div
+        ref={mapRef}
+        className="relative"
+        style={{
+          transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+        }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/lektern-bg.png"
@@ -39,7 +134,7 @@ export default function Home() {
               top: `${marker.y}%`,
               width: `${marker.size}%`,
             }}
-            onClick={() => setFullscreen(marker)}
+            onClick={() => { if (!hasDragged.current) setFullscreen(marker); }}
           >
             <div className="relative transition-transform duration-300 ease-in-out group-hover:scale-150 rounded-lg overflow-hidden">
               <Image
