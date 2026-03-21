@@ -279,7 +279,7 @@ export default function Home() {
               </button>
             )}
           </div>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm sm:text-2xl font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap">
             {fullscreen.label} &middot; {fullscreen.depth}m &middot; {fullscreen.imgs[imgIndex]}
             {fullscreen.imgs.length > 1 && ` (${imgIndex + 1}/${fullscreen.imgs.length})`}
           </div>
