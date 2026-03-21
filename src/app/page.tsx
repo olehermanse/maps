@@ -37,6 +37,8 @@ export default function Home() {
   const lastPos = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const lastTouchDist = useRef<number | null>(null);
+  const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -71,8 +73,61 @@ export default function Home() {
       setZoom(next);
       setPan(newPan);
     };
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        lastTouchDist.current = Math.hypot(dx, dy);
+        lastTouchCenter.current = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+        };
+      }
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && lastTouchDist.current !== null && lastTouchCenter.current !== null) {
+        e.preventDefault();
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        const dist = Math.hypot(dx, dy);
+        const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const rect = el.getBoundingClientRect();
+        const cx = centerX - rect.left - rect.width / 2;
+        const cy = centerY - rect.top - rect.height / 2;
+        const z = zoomRef.current;
+        const p = panRef.current;
+        const next = Math.min(Math.max(z * (dist / lastTouchDist.current), 1), 5);
+        const scale = next / z;
+        const panDx = centerX - lastTouchCenter.current.x;
+        const panDy = centerY - lastTouchCenter.current.y;
+        const newPan = clampPan({
+          x: cx - scale * (cx - p.x) + panDx,
+          y: cy - scale * (cy - p.y) + panDy,
+        }, next);
+        zoomRef.current = next;
+        panRef.current = newPan;
+        setZoom(next);
+        setPan(newPan);
+        lastTouchDist.current = dist;
+        lastTouchCenter.current = { x: centerX, y: centerY };
+      }
+    };
+    const onTouchEnd = () => {
+      lastTouchDist.current = null;
+      lastTouchCenter.current = null;
+    };
     el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    el.addEventListener("touchstart", onTouchStart, { passive: false });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
   }, []);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
@@ -114,7 +169,7 @@ export default function Home() {
   return (
     <div
       ref={containerRef}
-      className="flex items-center justify-center h-dvh w-dvw overflow-hidden select-none"
+      className="flex items-center justify-center h-dvh w-dvw overflow-hidden select-none touch-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
