@@ -3,7 +3,10 @@
 import Image from "next/image";
 import { useState, useRef, useCallback, useEffect } from "react";
 
-const markers = [
+type PhotoMarker = { src: string; x: number; y: number; size: number; depth: number; label: string };
+type LabelMarker = { x: number; y: number; label: string };
+
+const photoMarkers: PhotoMarker[] = [
   { src: "/photos/lektern-north.jpg", x: 23, y: 76, size: 8, depth: 17, label: "Lektern N" },
   { src: "/photos/ring.jpg", x: 6, y: 50, size: 8, depth: 12, label: "Ringen" },
   { src: "/photos/old-platform-1.jpg", x: 17, y: 45, size: 8, depth: 11, label: "Gamleplatta" },
@@ -18,8 +21,13 @@ const markers = [
   { src: "/photos/hole.jpg", x: 64, y: 72, size: 8, depth: 16, label: "Høl" },
 ];
 
+const labelMarkers: LabelMarker[] = [
+  { x: 90, y: 1.5, label: "Prodykk ^" },
+  { x: 22, y: 22, label: "Skolebrygga" },
+];
+
 export default function Home() {
-  const [fullscreen, setFullscreen] = useState<typeof markers[number] | null>(null);
+  const [fullscreen, setFullscreen] = useState<PhotoMarker | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const zoomRef = useRef(1);
@@ -125,7 +133,7 @@ export default function Home() {
           alt=""
           className="block max-w-full max-h-dvh h-auto w-auto"
         />
-        {markers.map((marker, i) => (
+        {photoMarkers.map((marker, i) => (
           <button
             key={i}
             className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
@@ -153,6 +161,19 @@ export default function Home() {
               </span>
             </div>
           </button>
+        ))}
+        {labelMarkers.map((marker, i) => (
+          <div
+            key={`label-${i}`}
+            className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none whitespace-nowrap text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+            style={{
+              left: `${marker.x}%`,
+              top: `${marker.y}%`,
+              fontSize: "1.2vw",
+            }}
+          >
+            {marker.label}
+          </div>
         ))}
       </div>
       {fullscreen && (
