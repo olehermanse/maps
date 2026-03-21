@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 const markers = [
-  { src: "/lektern-north.png", x: 23, y: 76, size: 12 },
+  { src: "/photos/lektern-north.png", x: 23, y: 76, size: 12 },
 ];
 
 export default function Home() {
