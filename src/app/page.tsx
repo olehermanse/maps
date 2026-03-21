@@ -39,6 +39,7 @@ export default function Home() {
   const mapRef = useRef<HTMLDivElement>(null);
   const lastTouchDist = useRef<number | null>(null);
   const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
+  const isPinching = useRef(false);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -76,6 +77,8 @@ export default function Home() {
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 2) {
         e.preventDefault();
+        isPinching.current = true;
+        isDragging.current = false;
         const dx = e.touches[1].clientX - e.touches[0].clientX;
         const dy = e.touches[1].clientY - e.touches[0].clientY;
         lastTouchDist.current = Math.hypot(dx, dy);
@@ -114,7 +117,10 @@ export default function Home() {
         lastTouchCenter.current = { x: centerX, y: centerY };
       }
     };
-    const onTouchEnd = () => {
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) {
+        isPinching.current = false;
+      }
       lastTouchDist.current = null;
       lastTouchCenter.current = null;
     };
@@ -131,14 +137,14 @@ export default function Home() {
   }, []);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || isPinching.current) return;
     isDragging.current = true;
     hasDragged.current = false;
     lastPos.current = { x: e.clientX, y: e.clientY };
   }, []);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging.current) return;
+    if (!isDragging.current || isPinching.current) return;
     const dx = e.clientX - lastPos.current.x;
     const dy = e.clientY - lastPos.current.y;
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) hasDragged.current = true;
