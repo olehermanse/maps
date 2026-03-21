@@ -262,18 +262,20 @@ export default function Home() {
             >
               &times;
             </button>
-            {imgIndex > 0 && (
+            {fullscreen.imgs.length > 1 && (
               <button
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
-                onClick={(e) => { e.stopPropagation(); setImgIndex((i) => i - 1); }}
+                disabled={imgIndex === 0}
+                className={`absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full text-3xl font-bold ${imgIndex === 0 ? "bg-black/30 text-white/30 cursor-default" : "bg-black/60 text-white cursor-pointer hover:bg-black/80"}`}
+                onClick={(e) => { e.stopPropagation(); if (imgIndex > 0) setImgIndex((i) => i - 1); }}
               >
                 &lsaquo;
               </button>
             )}
-            {imgIndex < fullscreen.imgs.length - 1 && (
+            {fullscreen.imgs.length > 1 && (
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 text-white text-3xl font-bold cursor-pointer hover:bg-black/80"
-                onClick={(e) => { e.stopPropagation(); setImgIndex((i) => i + 1); }}
+                disabled={imgIndex === fullscreen.imgs.length - 1}
+                className={`absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full text-3xl font-bold ${imgIndex === fullscreen.imgs.length - 1 ? "bg-black/30 text-white/30 cursor-default" : "bg-black/60 text-white cursor-pointer hover:bg-black/80"}`}
+                onClick={(e) => { e.stopPropagation(); if (imgIndex < fullscreen.imgs.length - 1) setImgIndex((i) => i + 1); }}
               >
                 &rsaquo;
               </button>
